@@ -1,5 +1,5 @@
-import React, {Component} from 'react';
-import {Platform, StyleSheet, Text, View} from 'react-native';
+import React, { Component } from 'react';
+import { Platform, StyleSheet, Text, View } from 'react-native';
 
 import Button from './components/Button'
 import Display from './components/Display'
@@ -13,15 +13,17 @@ const initialState = {
 }
 
 export default class App extends Component {
-  state = { ...initialState}
+  state = { ...initialState }
 
   addDigit = n => {
-    if (n === '.' && this.state.displayValue.includes('.')) {
+
+    const clearDisplay = this.state.clearDisplay ||
+      (this.state.displayValue === '0' && n !== '.')
+
+    if (n === '.' && !clearDisplay && this.state.displayValue.includes('.')) {
       return
     }
 
-    const clearDisplay = this.state.clearDisplay || 
-      (this.state.displayValue === '0' && n !== '.')
     const currentValue = clearDisplay ? '' : this.state.displayValue
     const displayValue = currentValue + n
     this.setState({ displayValue, clearDisplay: false })
@@ -45,7 +47,7 @@ export default class App extends Component {
       const equals = operation === '='
       const values = [...this.state.values]
 
-      try{
+      try {
         values[0] = eval(`${values[0]} ${this.state.operation} ${values[1]}`)
       } catch (e) {
         values[0] = this.state.values[0]
@@ -53,7 +55,7 @@ export default class App extends Component {
 
       values[1] = 0
       this.setState({
-        displayValue: values[0],
+        displayValue: `${values[0]}`,
         operation: equals ? null : operation,
         current: equals ? 0 : 1,
         clearDisplay: true,
@@ -72,7 +74,7 @@ export default class App extends Component {
           <Button label='7' onClick={this.addDigit} />
           <Button label='8' onClick={this.addDigit} />
           <Button label='9' onClick={this.addDigit} />
-          <Button label='*' operation onClick={this.setOperation}  />
+          <Button label='*' operation onClick={this.setOperation} />
           <Button label='4' onClick={this.addDigit} />
           <Button label='5' onClick={this.addDigit} />
           <Button label='6' onClick={this.addDigit} />
